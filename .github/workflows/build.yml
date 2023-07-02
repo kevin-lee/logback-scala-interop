@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [ "**" ]
+
+jobs:
+
+  build_java_project:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        scala:
+          - { name: "Scala 2", version: "2.13.11", binary-version: "2.13", java-version: "11", java-distribution: "temurin" }
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        java-version: ${{ matrix.scala.java-version }}
+        distribution: ${{ matrix.scala.java-distribution }}
+
+    - name: Cache SBT
+      uses: actions/cache@v3.2.6
+      with:
+        path: |
+          ~/.ivy2/cache
+          ~/.cache/coursier
+          ~/.sbt
+        key: ${{ runner.os }}-sbt-${{ matrix.scala.binary-version }}-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('**/build.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-sbt-${{ matrix.scala.binary-version }}-
+
+    - name: Build Java Project
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      run: |
+        export CI_BRANCH="${GITHUB_REF#refs/heads/}"
+        .github/workflows/sbt-build.sh ${{ matrix.scala.version }}
