@@ -63,7 +63,7 @@ lazy val props =
     val SonatypeCredentialHost = "s01.oss.sonatype.org"
     val SonatypeRepository     = s"https://$SonatypeCredentialHost/service/local"
 
-    final val LogbackVersion = "1.5.4"
+    final val LogbackVersion = "1.5.5"
   }
 
 lazy val libs = new {
