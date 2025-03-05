@@ -15,9 +15,9 @@ else
   echo ""
   if [[ "$CI_BRANCH" == "main" || "$CI_BRANCH" == "release" ]]
   then
-    sbt -d -J-Xmx2048m ++${SCALA_VERSION}! clean compile packagedArtifacts
+    sbt -d ++${SCALA_VERSION}! clean compile packagedArtifacts
   else
-    sbt -d -J-Xmx2048m ++${SCALA_VERSION}! clean compile package
+    sbt -d ++${SCALA_VERSION}! clean compile package
   fi
 
   echo "============================================"
